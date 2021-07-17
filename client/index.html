@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- prevent extraneous favicon requests -->
+  <link rel="icon" href="data:,">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script async type="text/javascript" src="./webgazer-compiled.js"></script>
+
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script type="module" src="webrtc.js"></script>
+  <!-- three.js -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <!-- Dirty Fix -->
+  <svg width="0" height="0">
+    <clippath id="innerClip">
+      <circle id="cin0" cx="0" cy="0" r="1000000" />
+      <circle id="cin1" />
+      <circle id="cin2" />
+      <circle id="cin3" />
+    </clippath>
+    <clippath id="outterClip">
+      <circle id="cout0" cx="0" cy="0" r="1000000" />
+      <circle id="cout1" />
+      <circle id="cout2" />
+      <circle id="cout3" />
+    </clippath>
+  </svg>
+</head>
+
+<body>
+  <!-- loading -->
+  <div id="loading" class="loading">
+    <img src="loading.gif" width="100%" height="100%"></img>
+  </div>
+
+  <canvas id="plotting_canvas" width="500" height="500" style="cursor:crosshair;"></canvas>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <div id="host" class="host"></div>
+  <!-- <canvas id="canvas"> -->
+  <div id="videos" class="videos">
+    <div id="localVideoContainer" class="localVideoContainer">
+      <video id="localVideo" autoplay muted></video>
+      <div id="webglContainer" class="webglContainer"></div>
+    </div>
+    <!-- Remote videos get appended here -->
+  </div>
+
+  <!-- remote videos rendered with webgl appended here -->
+  <div id="webgl" class="webgl"></div>
+  <div id="photo3d" class="webgl"></div>
+  <div id="frames" class="frames">
+
+    <!-- Remote frames get appended here -->
+
+  </div>
+  <!-- </canvas> -->
+  <!-- <canvas id = "gazeCanvas"></canvas> -->
+
+  <!-- from calibration html in webgazer -->
+  <script src="main.js"></script>
+  <script src="calibration.js"></script>
+  <script src="precision_calculation.js"></script>
+  <script src="precision_store_points.js"></script>
+
+  <!-- gaze -->
+  <script type="module" src="gazeViz.js"></script>
+
+  <!-- one euro filter -->
+  <!-- <script src="OneEuroFilter.js"></script> -->
+
+  <!-- webgl -->
+  <script type="module" src="webgl_video.js"></script>
+
+  <script type="module" src="xg_scene.js"></script>
+
+  <!-- <script type="text/javascript">
+    // if(window.bCalibrated)
+    start();
+  </script> -->
+
+  <nav id="webgazerNavbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <!-- The hamburger menu button -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <!-- Accuracy -->
+          <li id="Accuracy"><a>Not yet Calibrated</a></li>
+          <li onclick="Restart()"><a href="#">Recalibrate</a></li>
+          <li onclick="var reset = async () => {await localforage.clear(); location.reload()}; reset()"><a
+              href="#">Reset Model</a></li>
+          <li onclick="window.applyKalmanFilter = !window.applyKalmanFilter"><a href="#">Toggle Kalman Filter</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><button class="helpBtn" data-toggle="modal" data-target="#helpModal"><a data-toggle="modal"><span
+                  class="glyphicon glyphicon-cog"></span> Help</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Calibration points -->
+  <div class="calibrationDiv">
+    <input type="button" class="Calibration" id="Pt1"></input>
+    <input type="button" class="Calibration" id="Pt2"></input>
+    <input type="button" class="Calibration" id="Pt3"></input>
+    <input type="button" class="Calibration" id="Pt4"></input>
+    <input type="button" class="Calibration" id="Pt5"></input>
+    <input type="button" class="Calibration" id="Pt6"></input>
+    <input type="button" class="Calibration" id="Pt7"></input>
+    <input type="button" class="Calibration" id="Pt8"></input>
+    <input type="button" class="Calibration" id="Pt9"></input>
+  </div>
+
+  <!-- Modal -->
+  <dialog id="help">
+    <div id="helpModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div id="helpImageDialog" class="modal-content">
+          <div class="modal-body">
+            <img src="calibration.png" width="100%" height="100%" alt="webgazer demo instructions"></img>
+          </div>
+          <div class="modal-footer">
+            <button id="closeBtn" type="button" class="btn btn-default" data-dismiss="modal"
+              onclick="CloseCalib()">Close</button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="Restart()">Calibrate</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </dialog>
+
+
+
+
+  <!-- <script type="text/javascript" src="main.js"></script> -->
+  <!-- Latest compiled JavaScript -->
+  <!-- <script src="./resize_canvas.js"></script>
+  <script src="././node_modules/bootstrap/dist/js/bootstrap.min.js"></script> -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>
